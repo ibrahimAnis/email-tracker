@@ -6,6 +6,9 @@ jobs:
       - image: cimg/openjdk:17.0
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:qRNsSc+SrV85BKqzGWk8kOmdIazUYMJsDN+35rT37uQ"
       - setup_remote_docker
       - run:
           name: Build Application
@@ -22,9 +25,7 @@ jobs:
       - run:
           name: Deploy to EC2
           command: |
-            echo "$EC2_SSH_KEY" > ssh_key
-            chmod 600 ssh_key
-            ssh -o StrictHostKeyChecking=no -i ssh_key $EC2_USER@$EC2_HOST \<< 'EOF'
+            ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST \<< 'EOF'
               
               # Create Docker Compose file
               mkdir -p ~/emailtracker
