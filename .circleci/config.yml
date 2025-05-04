@@ -25,11 +25,11 @@ jobs:
       - run:
           name: Deploy to EC2
           command: |
-            ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST \<< 'EOF'
+            ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST \<< EOF
               
             # Create Docker Compose file
             mkdir -p ~/emailtracker
-            cat > ~/emailtracker/docker-compose.yml \<< 'EOT'
+            cat > ~/emailtracker/docker-compose.yml \<< EOT
             version: '3.8'
             services:
               app:
@@ -37,13 +37,13 @@ jobs:
                 ports:
                   - "8000:8000"
                 environment:
-                  - SPRING_MAIL_USERNAME=$SPRING_MAIL_USERNAME
-                  - SPRING_MAIL_PASSWORD=$SPRING_MAIL_PASSWORD
-                  - GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
-                  - GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
-                  - GOOGLE_REDIRECT_URI=$GOOGLE_REDIRECT_URI
-                  - DB_USERNAME=$DB_USERNAME
-                  - DB_PASSWORD=$DB_PASSWORD
+                  - SPRING_MAIL_USERNAME="$SPRING_MAIL_USERNAME"
+                  - SPRING_MAIL_PASSWORD="$SPRING_MAIL_PASSWORD"
+                  - GOOGLE_CLIENT_ID="$GOOGLE_CLIENT_ID"
+                  - GOOGLE_CLIENT_SECRET="$GOOGLE_CLIENT_SECRET"
+                  - GOOGLE_REDIRECT_URI="$GOOGLE_REDIRECT_URI"
+                  - DB_USERNAME="$DB_USERNAME"
+                  - DB_PASSWORD="$DB_PASSWORD"
                 restart: unless-stopped
                 networks:
                   - app-network
