@@ -8,7 +8,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "SHA256:qRNsSc+SrV85BKqzGWk8kOmdIazUYMJsDN+35rT37uQ"
+            - "SHA256:O4NYjiIJzBVWzi2CWmTZOhbYKqjl2iLofWfzJFcPZ/I"
       - setup_remote_docker
       - run:
           name: Build Application
