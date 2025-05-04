@@ -35,7 +35,7 @@ jobs:
               
               # Create Docker Compose file
               mkdir -p ~/emailtracker
-              cat << 'EOT' > ~/emailtracker/docker-compose.yml
+              cat \<< 'EOT' > ~/emailtracker/docker-compose.yml
               version: '3.8'
               services:
                 app:
