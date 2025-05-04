@@ -1,0 +1,73 @@
+version: 2.1
+
+jobs:
+  build-and-deploy:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.14
+      - run:
+          name: Install Dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y docker.io
+      - run:
+          name: Build Spring Boot App
+          command: mvn clean package
+      - run:
+          name: Build Docker Image
+          command: docker build -t $DOCKERHUB_USERNAME/email-tracker-app:latest .
+      - run:
+          name: Login to Docker Hub
+          command: echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+      - run:
+          name: Push Docker Image
+          command: docker push $DOCKERHUB_USERNAME/email-tracker-app:latest
+      - run:
+          name: Deploy to EC2
+          command: |
+            echo "$EC2_SSH_KEY" > ssh_key
+            chmod 600 ssh_key
+            ssh -o StrictHostKeyChecking=no -i ssh_key $EC2_USER@$EC2_HOST << 'EOF'
+              # Install Docker and Docker Compose if not already installed
+              sudo apt-get update
+              sudo apt-get install -y docker.io docker-compose
+              sudo usermod -aG docker $EC2_USER
+              
+              # Create Docker Compose file
+              mkdir -p ~/emailtracker
+              cat << 'EOT' > ~/emailtracker/docker-compose.yml
+              version: '3.8'
+              services:
+                app:
+                  image: $DOCKERHUB_USERNAME/email-tracker-app:latest
+                  ports:
+                    - "8000:8000"
+                  environment:
+                    - SPRING_MAIL_USERNAME=$SPRING_MAIL_USERNAME
+                    - SPRING_MAIL_PASSWORD=$SPRING_MAIL_PASSWORD
+                    - GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
+                    - GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
+                    - GOOGLE_REDIRECT_URI=$GOOGLE_REDIRECT_URI
+                    - DB_USERNAME=$DB_USERNAME
+                    - DB_PASSWORD=$DB_PASSWORD
+                  restart: unless-stopped
+                  networks:
+                    - app-network
+              networks:
+                app-network:
+                  driver: bridge
+              EOT
+
+              # Deploy with Docker Compose
+              cd ~/emailtracker
+              docker-compose pull
+              docker-compose up -d
+            EOF
+
+workflows:
+  build-and-deploy-workflow:
+    jobs:
+      - build-and-deploy

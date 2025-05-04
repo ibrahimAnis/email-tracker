@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Offer Just For You</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .content {
+            padding: 20px 0;
+        }
+        .footer {
+            padding: 20px 0;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            border-top: 1px solid #eee;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4285f4;
+            color: white !important;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Special Offer Just For You</h1>
+    </div>
+    
+    <div class="content">
+        <p>Hello,</p>
+        
+        <p>We're excited to share with you an exclusive offer that's been tailored specifically for you!</p>
+        
+        <p>To access your special offer, simply sign in with your Google account by clicking the button below:</p>
+        
+        <div style="text-align: center;">
+            <a th:href="${oauthUrl}" class="button">Access My Special Offer</a>
+        </div>
+        
+        <p>This offer is available for a limited time only, so don't miss out!</p>
+        
+        <p>Best regards,<br>The Marketing Team</p>
+    </div>
+    
+    <div class="footer">
+        <p>This email was sent to <span th:text="${recipientEmail}"></span></p>
+        <p>If you prefer not to receive these emails, you can unsubscribe here.</p>
+        <!-- Tracking pixel -->
+        <img th:src="${pixelUrl}" width="1" height="1" alt="" style="display:none;" />
+    </div>
+</body>
+</html>
