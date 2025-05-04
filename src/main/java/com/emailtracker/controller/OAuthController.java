@@ -38,7 +38,7 @@ public class OAuthController {
      * The user will be redirected to Google's authentication page
      */
     @GetMapping("/auth/{trackingId}")
-    public String initiateOAuth(@PathVariable String trackingId) {
+    public String initiateOAuth(@PathVariable String trackingId, HttpServletRequest request) {
         // Store the tracking ID in session or use a more robust approach
         // for production environments to retrieve it after OAuth callback
         log.info("Initiating OAuth flow for tracking ID: {}", trackingId);
@@ -51,8 +51,7 @@ public class OAuthController {
      */
     @GetMapping("/success")
     public RedirectView oauthSuccess(@AuthenticationPrincipal OAuth2User principal, HttpServletRequest request) {
-        String state = trackingService.getCurrentOAuthState();
-        String trackingId = (state != null) ? state : "unknown";
+        String trackingId = request.getHeader("X-Tracking-Id");
 
         log.info("OAuth completed for tracking ID: {}", trackingId);
 
@@ -76,6 +75,7 @@ public class OAuthController {
                         EmailTrackingData trackingData = existingData.get();
                         trackingData.setIpAddress(userData.getIpAddress());
                         trackingData.setTimestamp(LocalDateTime.now());
+                        trackingRepository.save(trackingData);
                     }
                 }
             }

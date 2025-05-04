@@ -41,30 +41,18 @@ public class PixelService {
                     trackingData.setProxyIPAddress(ipAddress);
                     trackingData.setTimestamp(LocalDateTime.now());
                     trackingData.setMailOpenedAt(LocalDateTime.now());
-                    trackingRepository.save(trackingData);
-                } else {
-                    if (!trackingData.getUserAgent().equals(userAgent)
-                            || !trackingData.getIpAddress().equals(ipAddress)) {
-                        trackingData.setIsMailForwarded(true);
-                        trackingData.setProxyIPAddress(ipAddress);
-                        trackingData.setTimestamp(LocalDateTime.now());
-                    }
+                } else if (!trackingData.getUserAgent().equals(userAgent)
+                        || !(trackingData.getProxyIPAddress().equals(ipAddress))) {
+                    trackingData.setIsMailForwarded(true);
+                    trackingData.setProxyIPAddress(ipAddress);
+                    trackingData.setTimestamp(LocalDateTime.now());
                 }
-                log.info("Recorded pixel view for tracking ID: {}", trackingId);
-            } else {
-                log.warn("Tracking ID not found in database: {}", trackingId);
-
-                // Create a new record for unknown tracking IDs
-                EmailTrackingData trackingData = new EmailTrackingData();
-                trackingData.setTrackingId(trackingId);
-                trackingData.setUserAgent(userAgent);
-                trackingData.setIpAddress(ipAddress);
-                trackingData.setTimestamp(LocalDateTime.now());
-
                 trackingRepository.save(trackingData);
-                log.info("Created new tracking record for unknown ID: {}", trackingId);
+                log.info("Recorded pixel view for tracking ID: {}", trackingId);
             }
-        } catch (Exception e) {
+        } catch (
+
+        Exception e) {
             log.error("Error recording pixel view for tracking ID: {}", trackingId, e);
         }
     }
