@@ -27,43 +27,43 @@ jobs:
           command: |
             ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST \<< 'EOF'
               
-              # Create Docker Compose file
-              mkdir -p ~/emailtracker
-              cat > ~/emailtracker/docker-compose.yml \<< 'EOT'
-              version: '3.8'
-              services:
-                app:
-                  image: $DOCKERHUB_USERNAME/email-tracker-app:latest
-                  ports:
-                    - "8000:8000"
-                  environment:
-                    - SPRING_MAIL_USERNAME="$SPRING_MAIL_USERNAME"
-                    - SPRING_MAIL_PASSWORD="$SPRING_MAIL_PASSWORD"
-                    - GOOGLE_CLIENT_ID="$GOOGLE_CLIENT_ID"
-                    - GOOGLE_CLIENT_SECRET="$GOOGLE_CLIENT_SECRET"
-                    - GOOGLE_REDIRECT_URI="$GOOGLE_REDIRECT_URI"
-                    - DB_USERNAME="$DB_USERNAME"
-                    - DB_PASSWORD="$DB_PASSWORD"
-                  restart: unless-stopped
-                  networks:
-                    - app-network
-              networks:
-                app-network:
-                  driver: bridge
-              EOT
+            # Create Docker Compose file
+            mkdir -p ~/emailtracker
+            cat > ~/emailtracker/docker-compose.yml \<< 'EOT'
+            version: '3.8'
+            services:
+              app:
+                image: $DOCKERHUB_USERNAME/email-tracker-app:latest
+                ports:
+                  - "8000:8000"
+                environment:
+                  - SPRING_MAIL_USERNAME="$SPRING_MAIL_USERNAME"
+                  - SPRING_MAIL_PASSWORD="$SPRING_MAIL_PASSWORD"
+                  - GOOGLE_CLIENT_ID="$GOOGLE_CLIENT_ID"
+                  - GOOGLE_CLIENT_SECRET="$GOOGLE_CLIENT_SECRET"
+                  - GOOGLE_REDIRECT_URI="$GOOGLE_REDIRECT_URI"
+                  - DB_USERNAME="$DB_USERNAME"
+                  - DB_PASSWORD="$DB_PASSWORD"
+                restart: unless-stopped
+                networks:
+                  - app-network
+            networks:
+              app-network:
+                driver: bridge
+            EOT
 
-              # Deploy with Docker Compose
-              cd ~/emailtracker
-              docker compose down || true
-              docker compose pull
-              docker compose up -d
+            # Deploy with Docker Compose
+            cd ~/emailtracker
+            docker compose down || true
+            docker compose pull
+            docker compose up -d
 
-              if docker compose ps --services --filter "status=running" | grep -q app; then
-                echo "✅ app container is up and healthy"
-              else
-                echo "❌ app container failed to start" >&2
-              exit 1
-              fi
+            if docker compose ps --services --filter "status=running" | grep -q app; then
+              echo "✅ app container is up and healthy"
+            else
+              echo "❌ app container failed to start" >&2
+            exit 1
+            fi
             EOF
 
 workflows:
