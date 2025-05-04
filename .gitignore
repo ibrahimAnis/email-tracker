@@ -1,6 +1,6 @@
 # Compiled class file
 *.class
-target/ *.jar *.war *.ear
+#target/ *.jar *.war *.ear
 # Log file
 *.log
 
