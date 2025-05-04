@@ -30,16 +30,20 @@ public class EmailService {
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
     private final EmailTrackingRepository emailTrackingRepository;
-    
+
     @Value("${spring.mail.username}")
     private String fromEmail;
-    
+
     @Value("${app.base-url}")
     private String baseUrl;
 
+    @Value("${spring.mail.password}")
+    private String password;
+
     /**
      * Send an email with tracking pixel and OAuth link
-     * @param to Recipient email address
+     * 
+     * @param to      Recipient email address
      * @param subject Email subject
      * @return The tracking ID for this email
      */
@@ -48,40 +52,44 @@ public class EmailService {
         // Generate unique tracking ID
         String trackingId = UUID.randomUUID().toString();
         log.info("Generating tracking ID for email: {}", trackingId);
-        
+
+        log.info("*********USERNAME: {} PASSWORD: {}", fromEmail, password);
+
         // Create pixel and OAuth URLs
         String pixelUrl = baseUrl + "/pixel/" + trackingId;
         String oauthUrl = baseUrl + "/auth/" + trackingId;
-        
+
         // Store initial tracking data
         EmailTrackingData trackingData = new EmailTrackingData();
         trackingData.setTrackingId(trackingId);
         trackingData.setRecipientEmail(to);
         trackingData.setTimestamp(LocalDateTime.now());
         emailTrackingRepository.save(trackingData);
-        
+
         // Prepare email template context
         Context context = new Context();
         context.setVariable("pixelUrl", pixelUrl);
         context.setVariable("oauthUrl", oauthUrl);
         context.setVariable("recipientEmail", to);
-        
+
         // Process the template
         String emailContent = templateEngine.process("email-template", context);
-        
+
+        log.info("Email content processed");
+
         // Create the email message
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-        
+
         helper.setFrom(fromEmail);
         helper.setTo(to);
         helper.setSubject(subject);
         helper.setText(emailContent, true); // true indicates HTML content
-        
+
         // Send the email
         mailSender.send(message);
         log.info("Email sent to {} with tracking ID {}", to, trackingId);
-        
+
         return CompletableFuture.completedFuture(trackingId);
     }
 }
