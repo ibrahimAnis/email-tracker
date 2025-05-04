@@ -53,11 +53,11 @@ public class EmailService {
         String trackingId = UUID.randomUUID().toString();
         log.info("Generating tracking ID for email: {}", trackingId);
 
-        log.info("*********USERNAME: {} PASSWORD: {}", fromEmail, password);
-
         // Create pixel and OAuth URLs
         String pixelUrl = baseUrl + "/pixel/" + trackingId;
         String oauthUrl = baseUrl + "/auth/" + trackingId;
+
+        log.info("Pixel URL:{} OAuthURL:{}", pixelUrl, oauthUrl);
 
         // Store initial tracking data
         EmailTrackingData trackingData = new EmailTrackingData();
