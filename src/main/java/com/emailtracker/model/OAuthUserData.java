@@ -22,6 +22,7 @@ public class OAuthUserData {
     private String email;
 
     private String name;
+
     private String ipAddress;
 
     private LocalDateTime timestamp;

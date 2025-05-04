@@ -36,12 +36,20 @@ public class PixelService {
             log.info("Recording Pixel Data for ID: {}", trackingId);
             if (existingData.isPresent()) {
                 EmailTrackingData trackingData = existingData.get();
-                trackingData.setUserAgent(userAgent);
-                trackingData.setIpAddress(ipAddress);
-                trackingData.setTimestamp(LocalDateTime.now());
-                trackingData.setIsMailOpened(true);
-
-                trackingRepository.save(trackingData);
+                if (trackingData.getMailOpenedAt() == null) {
+                    trackingData.setUserAgent(userAgent);
+                    trackingData.setProxyIPAddress(ipAddress);
+                    trackingData.setTimestamp(LocalDateTime.now());
+                    trackingData.setMailOpenedAt(LocalDateTime.now());
+                    trackingRepository.save(trackingData);
+                } else {
+                    if (!trackingData.getUserAgent().equals(userAgent)
+                            || !trackingData.getIpAddress().equals(ipAddress)) {
+                        trackingData.setIsMailForwarded(true);
+                        trackingData.setProxyIPAddress(ipAddress);
+                        trackingData.setTimestamp(LocalDateTime.now());
+                    }
+                }
                 log.info("Recorded pixel view for tracking ID: {}", trackingId);
             } else {
                 log.warn("Tracking ID not found in database: {}", trackingId);

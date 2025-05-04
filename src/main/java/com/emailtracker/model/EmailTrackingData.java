@@ -27,8 +27,11 @@ public class EmailTrackingData {
 
     private String ipAddress;
 
-    private Boolean isMailOpened;
-    private Boolean isMailForwarded;
+    private String proxyIPAddress;
+
+    private LocalDateTime mailOpenedAt;
+
+    private Boolean isMailForwarded = false;
 
     private LocalDateTime timestamp;
 }

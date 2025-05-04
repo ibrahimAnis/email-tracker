@@ -6,6 +6,7 @@
 /Users/ibrahimanis/workspace/anees_labs/email-tracker/src/main/java/com/emailtracker/controller/EmailController.java
 /Users/ibrahimanis/workspace/anees_labs/email-tracker/src/main/java/com/emailtracker/controller/TrackingController.java
 /Users/ibrahimanis/workspace/anees_labs/email-tracker/src/main/java/com/emailtracker/model/OAuthUserData.java
+/Users/ibrahimanis/workspace/anees_labs/email-tracker/src/main/java/com/emailtracker/util/IpAddressExtractor.java
 /Users/ibrahimanis/workspace/anees_labs/email-tracker/src/main/java/com/emailtracker/config/SecurityConfig.java
 /Users/ibrahimanis/workspace/anees_labs/email-tracker/src/main/java/com/emailtracker/controller/PixelController.java
 /Users/ibrahimanis/workspace/anees_labs/email-tracker/src/main/java/com/emailtracker/repository/EmailTrackingRepository.java

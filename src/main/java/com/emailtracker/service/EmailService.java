@@ -58,6 +58,7 @@ public class EmailService {
         EmailTrackingData trackingData = new EmailTrackingData();
         trackingData.setTrackingId(trackingId);
         trackingData.setRecipientEmail(to);
+        trackingData.setTimestamp(LocalDateTime.now());
         emailTrackingRepository.save(trackingData);
 
         // Prepare email template context

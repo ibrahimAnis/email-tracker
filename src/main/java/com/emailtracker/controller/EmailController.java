@@ -30,11 +30,13 @@ public class EmailController {
 
     /**
      * Endpoint to send emails with tracking pixel and OAuth link
+     * 
      * @param emailRequest The email request containing recipient information
      * @return Response with success/failure message
      */
     @PostMapping("/send-email")
-    public CompletableFuture<ResponseEntity<String>> sendEmail(@Valid @RequestBody EmailRequestDto emailRequest) throws MessagingException {
+    public CompletableFuture<ResponseEntity<String>> sendEmail(@Valid @RequestBody EmailRequestDto emailRequest)
+            throws MessagingException {
         log.info("Received request to send email to: {}", emailRequest.getRecipient());
         return emailService.sendEmailWithTracking(emailRequest.getRecipient(), emailRequest.getSubject())
                 .thenApply(trackingId -> ResponseEntity.ok("Email sent with tracking ID: " + trackingId))

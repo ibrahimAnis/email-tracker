@@ -27,6 +27,7 @@ public class TrackingService {
 
     /**
      * Get all email tracking data
+     * 
      * @return List of all pixel tracking records
      */
     public List<EmailTrackingData> getAllEmailTrackingData() {
@@ -35,26 +36,26 @@ public class TrackingService {
 
     /**
      * Get all OAuth user data
+     * 
      * @return List of all OAuth user records
      */
     public List<OAuthUserData> getAllOAuthUserData() {
         return oAuthUserRepository.findAll();
     }
-    
+
     /**
      * Extract the current OAuth state (tracking ID) from the authentication context
+     * 
      * @return The tracking ID or null if not available
      */
     public String getCurrentOAuthState() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        
+
         if (authentication instanceof OAuth2AuthenticationToken) {
             OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
-            // Extract the state parameter from the authentication details
-            // This approach may need adjustment based on the specific OAuth implementation
             return oauthToken.getDetails() != null ? oauthToken.getDetails().toString() : null;
         }
-        
+
         return null;
     }
 }

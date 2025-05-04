@@ -2,6 +2,8 @@ package com.emailtracker.controller;
 
 import java.util.*;
 import com.emailtracker.service.PixelService;
+import com.emailtracker.util.IpAddressExtractor;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -41,7 +43,7 @@ public class PixelController {
         // Extract tracking information
         String userAgent = request.getHeader("User-Agent");
 
-        String ipAddress = getClientIpAddress(request);
+        String ipAddress = IpAddressExtractor.getClientIpAddress(request);
 
         // Record the pixel view
         pixelService.recordPixelView(trackingId, userAgent, ipAddress);
@@ -54,28 +56,5 @@ public class PixelController {
                 .ok()
                 .headers(headers)
                 .body(pixelService.getTransparentPixel());
-    }
-
-    /**
-     * Extract client IP address from request, handling proxy scenarios
-     */
-    private String getClientIpAddress(HttpServletRequest request) {
-        String clientIp = request.getHeader("X-Forwarded-For");
-        if (clientIp == null || clientIp.isEmpty() || "unknown".equalsIgnoreCase(clientIp)) {
-            clientIp = request.getHeader("Proxy-Client-IP");
-        }
-        if (clientIp == null || clientIp.isEmpty() || "unknown".equalsIgnoreCase(clientIp)) {
-            clientIp = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (clientIp == null || clientIp.isEmpty() || "unknown".equalsIgnoreCase(clientIp)) {
-            clientIp = request.getRemoteAddr();
-        }
-
-        // If X-Forwarded-For contains multiple IPs, take the first one
-        if (clientIp != null && clientIp.contains(",")) {
-            clientIp = clientIp.split(",")[0].trim();
-        }
-
-        return clientIp;
     }
 }
