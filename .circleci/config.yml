@@ -6,6 +6,8 @@ jobs:
       - image: cimg/openjdk:17.0
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 24.0.6
       - run:
           name: Install Dependencies
           command: |
