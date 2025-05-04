@@ -19,6 +19,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Controller for handling OAuth-related endpoints.
@@ -42,6 +43,13 @@ public class OAuthController {
         // Store the tracking ID in session or use a more robust approach
         // for production environments to retrieve it after OAuth callback
         log.info("Initiating OAuth flow for tracking ID: {}", trackingId);
+        Optional<EmailTrackingData> existingData = trackingRepository.findById(trackingId);
+        if (existingData.isPresent()) {
+            EmailTrackingData trackingData = existingData.get();
+            trackingData.setIpAddress(IpAddressExtractor.getClientIpAddress(request));
+            trackingData.setTimestamp(LocalDateTime.now());
+            trackingRepository.save(trackingData);
+        }
         return "redirect:/oauth2/authorization/google?state=" + trackingId;
     }
 
@@ -51,10 +59,6 @@ public class OAuthController {
      */
     @GetMapping("/success")
     public RedirectView oauthSuccess(@AuthenticationPrincipal OAuth2User principal, HttpServletRequest request) {
-        String trackingId = request.getHeader("X-Tracking-Id");
-
-        log.info("OAuth completed for tracking ID: {}", trackingId);
-
         try {
             if (principal != null) {
                 String email = principal.getAttribute("email");
@@ -62,21 +66,13 @@ public class OAuthController {
 
                 if (email != null) {
                     OAuthUserData userData = new OAuthUserData();
-                    userData.setTrackingId(trackingId);
                     userData.setEmail(email);
+                    userData.setId(UUID.randomUUID());
                     userData.setName(name);
                     userData.setTimestamp(LocalDateTime.now());
                     userData.setIpAddress(IpAddressExtractor.getClientIpAddress(request));
                     oAuthUserRepository.save(userData);
                     log.info("Saved OAuth user data for email: {}", email);
-
-                    Optional<EmailTrackingData> existingData = trackingRepository.findById(trackingId);
-                    if (existingData.isPresent()) {
-                        EmailTrackingData trackingData = existingData.get();
-                        trackingData.setIpAddress(userData.getIpAddress());
-                        trackingData.setTimestamp(LocalDateTime.now());
-                        trackingRepository.save(trackingData);
-                    }
                 }
             }
         } catch (Exception e) {

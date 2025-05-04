@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Entity class for storing OAuth user data.
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 public class OAuthUserData {
 
     @Id
-    private String trackingId;
+    private UUID Id;
 
     private String email;
 
