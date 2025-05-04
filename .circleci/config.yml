@@ -58,7 +58,6 @@ jobs:
               docker compose pull
               docker compose up -d
             EOF
-            rm ssh_key
 
 workflows:
   build-and-deploy-workflow:
