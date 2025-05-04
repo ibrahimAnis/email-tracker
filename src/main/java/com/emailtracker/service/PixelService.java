@@ -39,6 +39,7 @@ public class PixelService {
                 trackingData.setUserAgent(userAgent);
                 trackingData.setIpAddress(ipAddress);
                 trackingData.setTimestamp(LocalDateTime.now());
+                trackingData.setIsMailOpened(true);
 
                 trackingRepository.save(trackingData);
                 log.info("Recorded pixel view for tracking ID: {}", trackingId);
@@ -83,7 +84,6 @@ public class PixelService {
                 };
             }
         }
-        System.out.println("Transparent pixel:" + transparentPixel);
         return transparentPixel;
     }
 }

@@ -35,11 +35,9 @@ public class PixelController {
      * @return A transparent 1x1 PNG image
      */
     @GetMapping("/{trackingId}")
-    public ResponseEntity<byte[]> trackPixel(@RequestHeader Map<String, String> headerList,
-            @PathVariable String trackingId, HttpServletRequest request) {
+    public ResponseEntity<byte[]> trackPixel(@PathVariable String trackingId, HttpServletRequest request) {
         log.info("Tracking pixel request received for ID: {}", trackingId);
 
-        headerList.forEach((name, value) -> log.info("Header '{}' = {}", name, value));
         // Extract tracking information
         String userAgent = request.getHeader("User-Agent");
 

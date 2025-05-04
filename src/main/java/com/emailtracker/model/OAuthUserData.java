@@ -18,10 +18,11 @@ public class OAuthUserData {
 
     @Id
     private String trackingId;
-    
+
     private String email;
-    
+
     private String name;
-    
+    private String ipAddress;
+
     private LocalDateTime timestamp;
 }

@@ -19,13 +19,16 @@ public class EmailTrackingData {
 
     @Id
     private String trackingId;
-    
+
     private String recipientEmail;
-    
+
     @Lob
     private String userAgent;
-    
+
     private String ipAddress;
-    
+
+    private Boolean isMailOpened;
+    private Boolean isMailForwarded;
+
     private LocalDateTime timestamp;
 }

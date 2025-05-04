@@ -37,9 +37,6 @@ public class EmailService {
     @Value("${app.base-url}")
     private String baseUrl;
 
-    @Value("${spring.mail.password}")
-    private String password;
-
     /**
      * Send an email with tracking pixel and OAuth link
      * 
@@ -57,13 +54,10 @@ public class EmailService {
         String pixelUrl = baseUrl + "/pixel/" + trackingId;
         String oauthUrl = baseUrl + "/auth/" + trackingId;
 
-        log.info("Pixel URL:{} OAuthURL:{}", pixelUrl, oauthUrl);
-
         // Store initial tracking data
         EmailTrackingData trackingData = new EmailTrackingData();
         trackingData.setTrackingId(trackingId);
         trackingData.setRecipientEmail(to);
-        trackingData.setTimestamp(LocalDateTime.now());
         emailTrackingRepository.save(trackingData);
 
         // Prepare email template context
