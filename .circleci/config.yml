@@ -14,9 +14,6 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y docker.io
       - run:
-          name: Build Spring Boot App
-          command: mvn clean package
-      - run:
           name: Build Docker Image
           command: docker build -t $DOCKERHUB_USERNAME/email-tracker-app:latest .
       - run:
@@ -30,7 +27,7 @@ jobs:
           command: |
             echo "$EC2_SSH_KEY" > ssh_key
             chmod 600 ssh_key
-            ssh -o StrictHostKeyChecking=no -i ssh_key $EC2_USER@$EC2_HOST << 'EOF'
+            ssh -o StrictHostKeyChecking=no -i ssh_key $EC2_USER@$EC2_HOST \<< 'EOF'
               # Install Docker and Docker Compose if not already installed
               sudo apt-get update
               sudo apt-get install -y docker.io docker-compose
@@ -46,13 +43,13 @@ jobs:
                   ports:
                     - "8000:8000"
                   environment:
-                    - SPRING_MAIL_USERNAME=$SPRING_MAIL_USERNAME
-                    - SPRING_MAIL_PASSWORD=$SPRING_MAIL_PASSWORD
-                    - GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
-                    - GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
-                    - GOOGLE_REDIRECT_URI=$GOOGLE_REDIRECT_URI
-                    - DB_USERNAME=$DB_USERNAME
-                    - DB_PASSWORD=$DB_PASSWORD
+                    - SPRING_MAIL_USERNAME="$SPRING_MAIL_USERNAME"
+                    - SPRING_MAIL_PASSWORD="$SPRING_MAIL_PASSWORD"
+                    - GOOGLE_CLIENT_ID="$GOOGLE_CLIENT_ID"
+                    - GOOGLE_CLIENT_SECRET="$GOOGLE_CLIENT_SECRET"
+                    - GOOGLE_REDIRECT_URI="$GOOGLE_REDIRECT_URI"
+                    - DB_USERNAME="$DB_USERNAME"
+                    - DB_PASSWORD="$DB_PASSWORD"
                   restart: unless-stopped
                   networks:
                     - app-network
@@ -66,6 +63,7 @@ jobs:
               docker-compose pull
               docker-compose up -d
             EOF
+            rm ssh_key
 
 workflows:
   build-and-deploy-workflow:
